@@ -17,5 +17,5 @@ echo "AIC Result List" > ../Results/BestAIC.txt
 ########################################################################
 # SIMULATIONS TO RUN                                                   #
 ########################################################################
-bash Run_Sim.sh Constant 40 1 800 1000000 0.01
+bash run_Sim.sh Constant 40 1 800 1000000 0.01
 
