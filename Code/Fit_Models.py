@@ -183,5 +183,9 @@ for i in range(0,5):
 	if aicList[i]==aicMin:
 		BestModel='\n The model with the best aic value is from Model %s' % ModelNameList[i]
 
+#Writes the above information to a joint file
+with open('../BestAIC.txt', 'a') as f:
+    f.write(ModelIntro)
+    f.write(BestModel)
 
 
