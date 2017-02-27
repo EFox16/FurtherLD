@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Emma Fox e.fox16@imperial.ac.uk
-# Script: run_Simulation.sh
+# Script: Run_Full.sh
 # Desc: Pipeline using ms to simulate, ANGSD to transform the files, and ngsLD to analyze with command line argument inputs to simulate a set of genomes for the scenario. The data is then binned using R, models are fitted to its distribution using python, and the resulting equations and parameters are plotted to the data using R. 
 # Arguments: set name, number of samples, number of repetitions, theta, number of sites, sequencing depth, error rate, AND exponential growth rate OR bottleneck time and magnitude 
 
@@ -84,7 +84,7 @@ do
 	########################################################################
 
 	#Breaks the data into bins of pairs that are 50*n pairs apart for easier visualization
-	Rscript ../../Code/Bin_ReadData.R $1.ld $1_$i.ld
+	Rscript ../../Code/Bin_ReadData.R $1_$i.ld
 
 	########################################################################
 	# MODEL FITTING                                                        #
@@ -99,6 +99,7 @@ done
 ########################################################################
 # PLOT CURVES                                                          #
 ########################################################################
+#In progress
 
 ########################################################################
 # RETURN INPUT PARAMETERS                                              #

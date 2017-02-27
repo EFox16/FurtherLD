@@ -32,7 +32,7 @@ add_line<-function(Base,DataSet){
   d<-FitData[18,3]
   
   #Plot the function
-  Base<-Base + stat_function(fun=function(x) a + b*x + c*x^2 + d*x^3, geom="line", aes(colour = SetName), size=.5) 
+  Base<-Base + stat_function(fun=function(x) a + b*x + c*x^2 + d*x^3, geom="line", colour=, aes(colour = SetName), size=.5) 
   
   #Return the graph
   return(Base)

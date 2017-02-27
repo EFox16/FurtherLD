@@ -148,13 +148,13 @@ resultList=[]
 
 #Creates resulting file name by stripping extension from input file and adding _FitParams to the end
 FileName, Exten = os.path.splitext(sys.argv[1])
-ResultName = '%s.FitParams.csv' % FileName
+SetName, Exten = os.path.splitext(FileName)
+ResultName = '../FitParams.csv'
 
 #Opens results file
-with open(ResultName, 'wb') as csvfile:
+with open(ResultName, 'a') as csvfile:
 	ResultFile = csv.writer(csvfile, delimiter=',', quotechar='|')
 	#Puts headings on the csv file
-	ResultFile.writerow(["Model", "Parameter", "Value"])
 	
 	#range 0 to 5 is the number of models
 	for i in range(0,5):
@@ -167,12 +167,12 @@ with open(ResultName, 'wb') as csvfile:
 		#save the aic values to a list
 		aicList.append(result.aic)
 		#save aic value to a row in the list
-		ResultFile.writerow([ModelName, "AIC", result.aic])
+		ResultFile.writerow([SetName,ModelName, "AIC", result.aic])
 		#this loop saves the value of each parameter. It used the counter to reference a list in the LetterList of lists. It then loops from the beginning of that list to the end and prints that letter, it's value, and the model it's from in the new csv file. 
 		for i in range(0,len(LetterList[counter])):
 			Letter=LetterList[counter][i]
 			NewVar=result.params.valuesdict()[Letter]
-			ResultFile.writerow([ModelName, Letter, NewVar])
+			ResultFile.writerow([SetName, ModelName, Letter, NewVar])
 		counter=counter + 1
 
 #Finds best value in AIC list
