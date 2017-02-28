@@ -40,4 +40,5 @@ Col7<-rep(0, length.out = (length(BinAvg)))
 
 #Compile the data into a data frame and output as a table 
 OutPut<-data.frame(Col1, Col2, BinMid, BinAvg, Col5, Col6, Col7)
+OutPut<-na.omit(OutPut)
 write.table(OutPut, file=paste(FileName,".Bin.csv", sep = ""), col.names = F, row.names = F)

@@ -12,6 +12,12 @@
 mkdir ../Results/$1
 cd ../Results/$1
 
+#Create a csv file to ouput the parameters to
+echo -e "Read_Set,Model,Parameter,Value" >> FitParams.csv
+#Make AIC result folder for all models to access and input best models
+echo "AIC Result List" > BestAIC.txt
+
+
 #Need to create a fast file with a reference sequence. Used to establish relative position of bases by a program in a later step. 
 Rscript -e 'cat(">reference\n",paste(rep("A",1e6),sep="", collapse=""),"\n",sep="")' > reference.fa 
 
@@ -52,7 +58,6 @@ then
 	/usr/bin/ms $N_SAM $N_REPS -t $THETA -r $RHO $N_SITES $SIMULATION_EVENTS > $1.txt
 fi
 
-
 for i in 2 5 10 20 50
 do
 	########################################################################
@@ -63,21 +68,21 @@ do
 	/usr/bin/msToGlf -in $1.txt -out $1_reads$i -regLen $N_SITES -singleOut 1 -depth $i -err $ERR_RATE -pileup 0 -Nsites 0
 
 	#This step generates a file that includes the full genome sequence rather than just the variable sites. Original reference file is used here. 
-	/usr/bin/angsd -glf $1_reads$i.glf.gz -fai reference.fa.fai -nInd $N_IND -doMajorMinor 1 -doPost 1 -doMaf 1 -doGeno 32 -out $1_reads$i.testLD -isSim 1 -minMaf $MINMAF
+	/usr/bin/angsd -glf $1_reads$i.glf.gz -fai reference.fa.fai -nInd $N_IND -doMajorMinor 1 -doPost 1 -doMaf 1 -doGeno 32 -out $1_reads$i -isSim 1 -minMaf $MINMAF
 
 	#Unzip output files
-	gunzip -f $1_reads$i.testLD.geno.gz
+	gunzip -f $1_reads$i.geno.gz
 
 	########################################################################
 	# RUN ngsLD                                                            #
 	########################################################################
 
 	#Create position file that is the length of the file just created 
-	zcat $1_reads$i.testLD.mafs.gz | cut -f 1,2 | tail -n +2 > $1_pos$i.txt
+	zcat $1_reads$i.mafs.gz | cut -f 1,2 | tail -n +2 > $1_pos$i.txt
 	NS=`cat $1_pos$i.txt | wc -l` 
 
 	#Run ngsLD. This will output a file with each row representing two SNPs. The file includes the position of each, the distace between the sites, and several  measures of the strength of the linkage between them 
-	/usr/bin/ngsLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.testLD.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --min_maf $MINMAF --rnd_sample 0.05 > $1_$i.ld
+	/usr/bin/ngsLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --min_maf $MINMAF --rnd_sample 0.05 > $1_$i.ld
 
 	########################################################################
 	# BIN DATA  														   #
@@ -99,7 +104,8 @@ done
 ########################################################################
 # PLOT CURVES                                                          #
 ########################################################################
-#In progress
+Rscript ../../Code/Plot_5ReadDataSets.R FitParams.csv $1_50.Bin.csv
+
 
 ########################################################################
 # RETURN INPUT PARAMETERS                                              #

@@ -149,7 +149,7 @@ resultList=[]
 #Creates resulting file name by stripping extension from input file and adding _FitParams to the end
 FileName, Exten = os.path.splitext(sys.argv[1])
 SetName, Exten = os.path.splitext(FileName)
-ResultName = '../FitParams.csv'
+ResultName = 'FitParams.csv'
 
 #Opens results file
 with open(ResultName, 'a') as csvfile:
@@ -184,7 +184,7 @@ for i in range(0,5):
 		BestModel='\n The model with the best aic value is from Model %s' % ModelNameList[i]
 
 #Writes the above information to a joint file
-with open('../BestAIC.txt', 'a') as f:
+with open('BestAIC.txt', 'a') as f:
     f.write(ModelIntro)
     f.write(BestModel)
 
