@@ -77,21 +77,21 @@ ParamsList.append(paramsGAM)
 # POLYNOMIAL FUNCTIONS                                                 #
 ########################################################################
 
-def POLY1(paramsPOLY1, x, data):
+def LIN(paramsLIN, x, data):
 	"""Linear function"""
-	a = paramsPOLY1['a']
-	b = paramsPOLY1['b']
+	a = paramsLIN['a']
+	b = paramsLIN['b']
 	model = a + b*x
 	return model - data
 
 #Create parameter set
-paramsPOLY1 = Parameters()
-paramsPOLY1.add('a', value=1)
-paramsPOLY1.add('b', value=1)
+paramsLIN = Parameters()
+paramsLIN.add('a', value=1)
+paramsLIN.add('b', value=1)
 
 #Add function and parameter set to respective lists
-FunctionList.append(POLY1)
-ParamsList.append(paramsPOLY1)
+FunctionList.append(LIN)
+ParamsList.append(paramsLIN)
 
 def POLY2(paramsPOLY2, x, data):
 	"""Polynomial function with 3 variables and order 2"""
@@ -136,7 +136,7 @@ ParamsList.append(paramsPOLY3)
 ########################################################################
 
 #Creates a list of the names of the functions and parameters
-ModelNameList=['EXP', 'GAM', 'POLY1', 'POLY2', 'POLY3']
+ModelNameList=['EXP', 'GAM', 'LIN', 'POLY2', 'POLY3']
 LetterList=[['init', 'lam'], ['k', 't'], ['a', 'b'], ['a', 'b', 'c'],['a', 'b', 'c', 'd']]
 
 #Starts a counter used in the loop
