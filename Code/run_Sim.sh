@@ -83,6 +83,9 @@ do
 
 	#Run ngsLD. This will output a file with each row representing two SNPs. The file includes the position of each, the distace between the sites, and several  measures of the strength of the linkage between them 
 	/usr/bin/ngsLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --min_maf $MINMAF --rnd_sample 0.05 > $1_$i.ld
+	
+	#Run ngsLD with called genotypes
+	/usr/bin/ngsLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --min_maf $MINMAF --call_geno --rnd_sample 0.05 > $1_Call$i.ld
 
 	########################################################################
 	# BIN DATA  														   #
@@ -90,13 +93,15 @@ do
 
 	#Breaks the data into bins of pairs that are 50*n pairs apart for easier visualization
 	Rscript ../../Code/Bin_ReadData.R $1_$i.ld
-
+	Rscript ../../Code/Bin_ReadData.R $1_Call$i.ld
+	
 	########################################################################
 	# MODEL FITTING                                                        #
 	########################################################################
 
 	#Fits 5 model curves (an exponential, gamma, linear, and 2 polynomial) to the data. Returns a file of the fit parameters as well as a file of AIC values for comparison.
-	python ../../Code/Fit_Models.py $1_$i.Bin.csv	
+	python ../../Code/Fit_Models.py $1_$i.Bin.csv
+	python ../../Code/Fit_Models.py $1_Call$i.Bin.csv	
 
 done
 
@@ -104,7 +109,7 @@ done
 ########################################################################
 # PLOT CURVES                                                          #
 ########################################################################
-Rscript ../../Code/Plot_5ReadDataSets.R FitParams.csv $1_50.Bin.csv
+#Rscript ../../Code/Plot_5ReadDataSets.R FitParams.csv $1_50.Bin.csv
 
 
 ########################################################################
