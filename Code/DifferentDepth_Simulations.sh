@@ -75,7 +75,7 @@ do
 	NS=`cat $1_pos$i.txt | wc -l` 
 
 	#Run ngsLD. This will output a file with each row representing two SNPs. The file includes the position of each, the distace between the sites, and several  measures of the strength of the linkage between them 
-	/usr/bin/ngsLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.testLD.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --min_maf $MINMAF --rnd_sample 0.05 > $1_$i.ld
+	/usr/bin/ngsLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.testLD.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --min_maf $MINMAF > $1_$i.ld
 
 done
 
