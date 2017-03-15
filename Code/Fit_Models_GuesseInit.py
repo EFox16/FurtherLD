@@ -147,7 +147,7 @@ resultList=[]
 #Creates resulting file name by stripping extension from input file and adding _FitParams to the end
 FileName, Exten = os.path.splitext(sys.argv[1])
 SetName, Exten = os.path.splitext(FileName)
-ResultName = 'FitParams_R2Comp.csv'
+ResultName = 'FitParams.csv'
 
 #Opens results file
 with open(ResultName, 'a') as csvfile:

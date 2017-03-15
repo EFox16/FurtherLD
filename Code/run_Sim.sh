@@ -87,29 +87,7 @@ do
 	#Run ngsLD with called genotypes
 	/usr/bin/ngsLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --min_maf $MINMAF --call_geno > $1_Call$i.ld
 
-	########################################################################
-	# BIN DATA  														   #
-	########################################################################
-
-	#Breaks the data into bins of pairs that are 50*n pairs apart for easier visualization
-	#Rscript ../../Code/Bin_ReadData.R $1_Reads$i.ld
-	#Rscript ../../Code/Bin_ReadData.R $1_Call$i.ld
-	
-	########################################################################
-	# MODEL FITTING                                                        #
-	########################################################################
-
-	#Fits 5 model curves (an exponential, gamma, linear, and 2 polynomial) to the data. Returns a file of the fit parameters as well as a file of AIC values for comparison.
-	#python ../../Code/Fit_Models.py $1_Reads$i.ld
-	#python ../../Code/Fit_Models.py $1_Call$i.ld	
-
 done
-
-
-########################################################################
-# PLOT CURVES                                                          #
-########################################################################
-#Rscript ../../Code/Plot_ExpCurves.R FitParams.csv $1_Reads50.Bin.csv
 
 
 ########################################################################
