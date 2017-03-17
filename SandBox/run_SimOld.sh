@@ -9,8 +9,14 @@
 ########################################################################
 
 #This process generates quite a few output files so this step creates a folder for those files. Moving the working directory to this new folder simplifies the processing of the various files. 
-mkdir $1
-cd $1
+mkdir ../Results/$1
+cd ../Results/$1
+
+#Create a csv file to ouput the parameters to
+#echo -e "Read_Set,Model,Parameter,Value" >> FitParams.csv
+#Make AIC result folder for all models to access and input best models
+#echo "AIC Result List" > BestAIC.txt
+
 
 #Need to create a fast file with a reference sequence. Used to establish relative position of bases by a program in a later step. 
 Rscript -e 'cat(">reference\n",paste(rep("A",1e6),sep="", collapse=""),"\n",sep="")' > reference.fa 
@@ -40,8 +46,8 @@ MINMAF=$(echo "scale=2; 2/$N_SAM" | bc)
 # RUN MS                                                               #
 ########################################################################
 
-#If there are only 6 values input, run ms with the assigned variables to generate data about the location and haplotype of variable sites in hypothetical genomes
-#If there are 7 values, the 8th describes some demographic event in the history of the population
+#If there are only 7 values input, run ms with the assigned variables to generate data about the location and haplotype of variable sites in hypothetical genomes
+#If there are 8 values, the 8th describes some demographic event in the history of the population
 
 if [ $# = 6 ]
 then
@@ -103,9 +109,9 @@ then
 	echo "Simulation Events="$SIMULATION_EVENTS >> $1_INPUT.txt
 fi
 
-#~ ########################################################################
-#~ # BACK TO CODE FOLDER                                                  #
-#~ ########################################################################
+########################################################################
+# BACK TO CODE FOLDER                                                  #
+########################################################################
 
-#~ #Returns to code folder to begin next set
-#~ cd ../../Code
+#Returns to code folder to begin next set
+cd ../../Code
