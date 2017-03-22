@@ -70,25 +70,25 @@ do
 	#ANGSD converts ms output to glf file type which can be read by later programs
 	$TOGLF -in $1.txt -out $1_reads$i -regLen $N_SITES -singleOut 1 -depth $i -err $ERR_RATE -pileup 0 -Nsites 0
 
-	#~ #This step generates a file that includes the full genome sequence rather than just the variable sites. Original reference file is used here. 
-	#~ $ANGSD -glf $1_reads$i.glf.gz -fai reference.fa.fai -nInd $N_IND -doMajorMinor 1 -doPost 1 -doMaf 1 -doGeno 32 -out $1_reads$i -isSim 1 -minMaf $MINMAF
+	#This step generates a file that includes the full genome sequence rather than just the variable sites. Original reference file is used here. 
+	$ANGSD -glf $1_reads$i.glf.gz -fai reference.fa.fai -nInd $N_IND -doMajorMinor 1 -doPost 1 -doMaf 1 -doGeno 32 -out $1_reads$i -isSim 1 -minMaf $MINMAF
 
-	#~ #Unzip output files
-	#~ gunzip -f $1_reads$i.geno.gz
+	#Unzip output files
+	gunzip -f $1_reads$i.geno.gz
 
-	#~ ########################################################################
-	#~ # RUN ngsLD                                                            #
-	#~ ########################################################################
+	########################################################################
+	# RUN ngsLD                                                            #
+	########################################################################
 
-	#~ #Create position file that is the length of the file just created 
-	#~ zcat $1_reads$i.mafs.gz | cut -f 1,2 | tail -n +2 > $1_pos$i.txt
-	#~ NS=`cat $1_pos$i.txt | wc -l` 
+	#Create position file that is the length of the file just created 
+	zcat $1_reads$i.mafs.gz | cut -f 1,2 | tail -n +2 > $1_pos$i.txt
+	NS=`cat $1_pos$i.txt | wc -l` 
 
-	#~ #Run ngsLD. This will output a file with each row representing two SNPs. The file includes the position of each, the distace between the sites, and several  measures of the strength of the linkage between them 
-	#~ $NGSLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 | gzip > $1_Reads$i.ld.gz
+	#Run ngsLD. This will output a file with each row representing two SNPs. The file includes the position of each, the distace between the sites, and several  measures of the strength of the linkage between them 
+	$NGSLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 | gzip > $1_Reads$i.ld.gz
 	
-	#~ #Run ngsLD with called genotypes
-	#~ $NGSLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --call_geno | gzip > $1_Call$i.ld.gz
+	#Run ngsLD with called genotypes
+	$NGSLD --verbose 1 --n_ind $N_IND --n_sites $NS --geno $1_reads$i.geno --probs --pos $1_pos$i.txt --max_kb_dist 1000 --call_geno | gzip > $1_Call$i.ld.gz
 
 	####################################################################
 	# DATA SETS FOR P VALUE FILTERING                                  #
