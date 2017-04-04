@@ -16,7 +16,7 @@ ParamsData<-read.csv(args[2])
 init<-ParamsData[2,3]
 lam<-ParamsData[3,3]
 #Create line layer to add to plot
-ExpCurve<-stat_function(fun=function(x) init * exp(lam * x), geom="line", size=1)
+ExpCurve<-stat_function(fun=function(x) init * exp(lam * x), geom="line", aes(colour="Exponential Decay Curve"), size=1)
 
 #Set y axis max
 MaxY<-init+0.01
@@ -30,8 +30,8 @@ AxisData<-read.table(args[1])
 Distance <- AxisData[,3]
 r2 <- AxisData[,4]
 #Create blank graph to plot line on
-FitPlot<-ggplot(AxisData, aes(x=Distance, y=r2)) + ylim(0,MaxY) +
-  geom_blank() + labs(x="Distance",y="r^2")
+FitPlot<-ggplot(AxisData, aes(x=Distance, y=r2)) +
+  geom_point() + labs(x="Distance",y="r^2")
 
 #Plot final graph
 FitPlot<-FitPlot + ExpCurve + ggtitle(PlotTitle)

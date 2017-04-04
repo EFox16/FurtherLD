@@ -25,7 +25,7 @@ ldFile = open(sys.argv[1])
 #Loads the distance between the pairs as well as the different linkage statistics into numpy nd arrays
 BPDist,r2Pear,D,DPrime,r2GLS=np.loadtxt(ldFile, usecols=(2,3,4,5,6), unpack=True)
 
-#Sets the x to zero and the response data to the r^2 value
+#Sets the x to zero and the response data to the r^2 value (can also change data to D, DPrime, and r2GLS)
 x=BPDist
 data=r2Pear
 
@@ -82,7 +82,7 @@ with open(ResultName, 'a') as csvfile:
 	ResultFile = csv.writer(csvfile, delimiter=',', quotechar='|')
 	#Puts headings on the csv file
 	ResultFile.writerow(["Data_Set", "Parameter", "Value"])
-	ResultFile.writerow([SetName, "AIC", ResultEXP.aic])
-	ResultFile.writerow([SetName, "init", ResultEXP.params.valuesdict()['init']])
-	ResultFile.writerow([SetName, "lam", ResultEXP.params.valuesdict()['lam']])
+	ResultFile.writerow([FileName, "AIC", ResultEXP.aic])
+	ResultFile.writerow([FileName, "init", ResultEXP.params.valuesdict()['init']])
+	ResultFile.writerow([FileName, "lam", ResultEXP.params.valuesdict()['lam']])
 	

@@ -70,8 +70,6 @@ names(FullDF)<-c("V1"="Position1", "V2"="Position2", "V3"="Distance", "V4"="r2Pe
 
 #List of files to use in loop
 FileList<-c(args[2], args[3], args[4], args[5], args[6], args[7], args[8]) 
-            
-
 
 #Empty vectors for loop
 RMSDVect<-numeric()
