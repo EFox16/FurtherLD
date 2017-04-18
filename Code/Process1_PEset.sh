@@ -44,7 +44,7 @@ $FASTQC ${SET_NAME}_1.fastq ${SET_NAME}_2.fastq
 ########################################################################
 # TRIM LOW QUALITY SECTIONS                                            #
 ########################################################################
-#How to use base out?
+
 echo -e "\nTrimming low quality section with Trimmomatic"
 
 java -jar $TRIMMOMATIC PE ${SET_NAME}_1.fastq ${SET_NAME}_2.fastq ${SET_NAME}_1P.fq.gz ${SET_NAME}_1U.fq.gz ${SET_NAME}_2P.fq.gz ${SET_NAME}_2U.fq.gz ILLUMINACLIP:$ADAPTOR_FILE:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:50
@@ -52,7 +52,6 @@ java -jar $TRIMMOMATIC PE ${SET_NAME}_1.fastq ${SET_NAME}_2.fastq ${SET_NAME}_1P
 ########################################################################
 # QUALITY ANALYSIS AFTER TRIMMING                                      #
 ########################################################################
-#Use paired or unpaired reads? Do I have to unzip first?
 
 echo -e "\nChecking processed sequence quality"
 
@@ -84,20 +83,16 @@ $STAMPY -g hg18 -h hg18 -M ${SET_NAME}_1P.fq.gz ${SET_NAME}_2P.fq.gz
 ########################################################################
 # CONVERT TO BAM FORMAT WITH SAMTOOLS                                  #
 ########################################################################
-#check if there's a HEADER and if the command is bS or Sb
+
 $SAMTOOLS view -bS ${SET_NAME}.sam | $SAMTOOLS sort - ${SET_NAME}_sorted
 
 
 ########################################################################
 # VARIANT CALLING WITH GATK                                            #
 ########################################################################
-#needs to be in SAM format when we get to this point
 #.bam, indexed and sorted in coordinate order, proper bam header
 
 echo -e "\nCalling SNPs with GATK"
 java -jar $GATK -T HaplotypeCaller -R $REF_GENOME -I ${SET_NAME}_sorted.bam -o ${SET_NAME}.vcf -ERC GVCF 
 
-#-L 20:10,000,000-10,200,000 Don't think we need to subset because
-#we have full genome but should ask
-
-#Can combine lots of gvcfs after that
+#Can combine lots of gvcfs after this
