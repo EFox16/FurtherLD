@@ -6,10 +6,13 @@ run_Sim.sh -
 Input simulation parameters and data for sets of 2, 5, 10, 20, and 50 reads and with a minmaf threshold, p value of 0.05 threshold, or p value of 0.01 threshold are generated.
 
 HPC_Index.sh-
-Can be modified to scan a .ld data file and write the rows that match specified columns in a reference file to a new folder. 
+Can be modified to scan a .ld data file and write the rows that match specified columns in a reference file to a new folder. There are two other versions that were created to work with the p-value filtered data.
 
 Calculating_ComparisonStatistics.R-
 Input 'true' reads file first then the 50GL and then the 20, 10, and 5 read files in the order called then read files. Will return SB and RMSD graphs
+
+Plot_CompStats.R-
+Script runs with no input and generates the RMSD and SB graphs for the first phase of data. 
 
 Fit_Exp.py-
 Takes a single file input and outputs a file containing the fit parameters ad AIC value for an exponential decay curve fitting the data. 
@@ -17,18 +20,15 @@ Takes a single file input and outputs a file containing the fit parameters ad AI
 Plot_Exp.R-
 Takes a data file and fit parameter file inputs and returns a graph of the curve on the data.
 
-runHPC_StartFiles.sh-
-Will generate the files needed to run a simulation on the HPC cluster
+Process1_PEset.sh-
+Draft of pipeline to trim, map, and call SNPs for guppy data.
 
-runHPC_Sim.sh-
-Draft pipeline for running a simulation on the HPC cluster.
-
+HPC_TrimMap_Turkey.sh-
+Pipeline to be run on the HPC cluster that downloads fastq files from the ncbi database, trims them, and maps them to a reference. 
 
 RESULTS
 
 *make sure repository contains and folder named Results
-
-
 
 SANDBOX
 runPVAL_sim.sh-
@@ -88,3 +88,4 @@ Calculates fit params for the r^2 GLs data.
 
 Plot_ExpCurves.R-
 Plots the exponential curves for the .jpg s in the folder. 
+
