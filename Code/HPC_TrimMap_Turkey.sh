@@ -1,6 +1,6 @@
 #!/bin/bash
-#PBS -l walltime=08:00:00
-#PBS -lselect=1:ncpus=1:mem=250gb 
+#PBS -l walltime=06:30:00
+#PBS -lselect=1:ncpus=1:mem=64gb 
 
 module load intel-suite
 module load java
@@ -13,7 +13,7 @@ TRIMMOMATIC=$HOME/Packages/Trimmomatic/trimmomatic-0.36.jar
 HISAT2=$HOME/Packages/HISAT2
 SAMTOOLS=$HOME/Packages/Samtools/samtools
 
-ADAPTER_FILE=$HOME/Packages/Trimmomatic/adapters/TruSeq3-PE
+ADAPTER_FILE=$WORK/AEW-adaptors.fa
 REF_GENOME=Mg_Ref.fa
 
 if [ $PBS_ARRAY_INDEX = 1 ]; then
@@ -74,6 +74,8 @@ date
 
 echo -e "\nConverting from SAM to BAM format"
 $SAMTOOLS view -bS ${SET_NAME}.sam > ${SAMPLE_NAME}.bam
+rm $WORK/Downloads/sra/${SET_NAME}*
+date
 
 echo -e "\nSorting BAM file"
 $SAMTOOLS sort -o ${SAMPLE_NAME}_srtd.bam ${SAMPLE_NAME}.bam 
@@ -85,6 +87,7 @@ date
 
 echo -e "\nZipping .bam and .bai files"
 tar czvf ${SAMPLE_NAME}.tgz ${SAMPLE_NAME}_srtd*
+date
 
 echo -e "\nMoving .bam and .bai files to work directory"
 mv ${SAMPLE_NAME}.tgz $WORK
