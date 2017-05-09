@@ -29,8 +29,8 @@ parser.add_argument("input_name", type=str,
 					help="Specify the path to the FILE or FOLDER")
 parser.add_argument("data_type", type=str, choices=['r2Pear','D','DPrime','r2GLS'],
 					help="Choose which measure to plot: r2Pear, D, DPrime, or r2GLS")
-#~ parser.add_argument("--scale", 
-					#~ help="scale distance and linkage disequilibrium measures to 1 megabase", action="store_true")
+parser.add_argument("--plot", 
+					help="create a graph of each input file with the fit 	curve overlaid", action="store_true")
 args = parser.parse_args()
 
 # Print help if no arguments specified and quit run
@@ -53,7 +53,6 @@ def Make_FileList(input_name):
 	if args.input_type == 'FOLDER':
 		FileList = glob.glob('%s*' % input_name)
 	return FileList
-
 		
 def Load_File(file_list_pos):
 	"""Loads a single file and defines the x and y axis for the graph"""
@@ -140,9 +139,10 @@ with open(ResultName, 'wb') as csvfile:
 		ResultFile.writerow([os.path.basename(FileList[i]), args.data_type, "init", ResultEXP.params.valuesdict()['init']])
 		ResultFile.writerow([os.path.basename(FileList[i]), args.data_type, "lam", ResultEXP.params.valuesdict()['lam']])
 
-#Use the name of the result file, the type of data used, and the files analysed as arguments for the r graphing script
-args=[ResultName] + [args.data_type] + FileList
+if args.plot:
+	#Use the name of the result file, the type of data used, and the files analysed as arguments for the r graphing script
+	args=[ResultName] + [args.data_type] + FileList
 
-#HOW SHOULD I REFER TO THE PLOTTING SCRIPT? (will be in the same folder as the Fit_Exp.py script but not necessarily in the folder the script is being run) 
-print "\nBeginning plotting in R\n"
-subprocess.call(["Rscript", "Fit_Exp_Plot.R"] + args)
+	#HOW SHOULD I REFER TO THE PLOTTING SCRIPT? (will be in the same folder as the Fit_Exp.py script but not necessarily in the folder the script is being run) 
+	print "\nBeginning plotting in R\n"
+	subprocess.call(["Rscript", "Fit_Exp_Plot.R"] + args)
