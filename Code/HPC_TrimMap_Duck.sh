@@ -1,6 +1,6 @@
 #!/bin/bash
-#PBS -l walltime=08:00:00
-#PBS -lselect=1:ncpus=1:mem=250gb 
+#PBS -l walltime=06:30:00
+#PBS -lselect=1:ncpus=1:mem=64gb 
 
 module load intel-suite
 module load java
@@ -92,6 +92,8 @@ date
 
 echo -e "\nConverting from SAM to BAM format"
 $SAMTOOLS view -bS ${SET_NAME}.sam > ${SAMPLE_NAME}.bam
+rm $WORK/Downloads/sra/${SET_NAME}*
+date
 
 echo -e "\nSorting BAM file"
 $SAMTOOLS sort -o ${SAMPLE_NAME}_srtd.bam ${SAMPLE_NAME}.bam 
@@ -103,9 +105,11 @@ date
 
 echo -e "\nZipping .bam and .bai files"
 tar czvf ${SAMPLE_NAME}.tgz ${SAMPLE_NAME}_srtd*
+date
 
 echo -e "\nMoving .bam and .bai files to work directory"
 mv ${SAMPLE_NAME}.tgz $WORK
 
 echo -e "\nScript run to completion"
 date
+
