@@ -146,8 +146,11 @@ with open(ResultName, 'wb') as csvfile:
 
 if args.plot:
 	#Use the name of the result file, the type of data used, and the files analysed as arguments for the r graphing script
+	Rpath=sys.path[0]
+	Rfile="Fit_Exp_Plot.R"
+	Rrun = "%s/%s" % (Rpath,Rfile)
 	args=[ResultName] + [args.data_type] + FileList
-
+	
 	#HOW SHOULD I REFER TO THE PLOTTING SCRIPT? (will be in the same folder as the Fit_Exp.py script but not necessarily in the folder the script is being run) 
 	print "\nBeginning plotting in R\n"
-	subprocess.call(["Rscript", "Fit_Exp_Plot.R"] + args)
+	subprocess.call(["Rscript", Rrun] + args)
