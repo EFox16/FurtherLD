@@ -33,7 +33,7 @@ Plot_Graph<-function(ParamsFile,DataFile,DataType,InitPos,LamPos){
     LD<-AxisData[,7]
   }
   #Store the base scatterplot
-  FitPlot<-ggplot(AxisData, aes(x=Distance, y=LD)) + geom_point() + labs(x="Distance",y=DataType)
+  FitPlot<-ggplot(AxisData, aes(x=Distance, y=LD)) + geom_point() + labs(x="Distance (in bases)",y=DataType)
   
   cat("\nLoading the equation of the fit exponential curve")
   #Use the fit params file to get the coefficients for the exponential decay function

@@ -15,3 +15,8 @@ NS=`cat Test_pos.txt | wc -l`
 
 mkdir TestResults
 gunzip -f Test_reads.geno.gz
+
+/usr/bin/ngsLD --geno Test_reads.geno --out TestResults/Test.ld --pos Test_pos.txt --n_ind 20 --n_sites $NS --verbose 1 --probs --max_kb_dist 1000 --min_maf 0.05 --rnd_sample 0.05
+
+#~ python Fit_Exp.py --input_type FILE --input_name TestResults/Test.ld --data_type r2GLS --plot
+
