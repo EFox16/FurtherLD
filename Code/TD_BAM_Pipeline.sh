@@ -7,15 +7,35 @@
 #Create list of bam files and N_IND
 ls *.bam > bam.filelist
 N_IND=`ls *.bam | wc -l`
-
-#Generate glf and mafs file 
-/usr/bin/angsd -GL 1 -doGlf 1 -bam bam.filelist -out Turkey -doMajorMinor 1 -doMaf 1 -minMaf 0.05 -P 4 -downSample 0.10
+#1/2x ind for minMaf
 
 #Get .fai reference
-samtools faidx Mg_ref.fa
+bgzip Mg_Ref.fa
+samtools faidx Mg_Ref.fa
 
-#Generate geno file
-/usr/bin/angsd -glf Turkey.glf.gz -out Turkey -fai Mg_ref.fa.fai -doMajorMinor 1 -doPost 1 -doMaf 1 -doGeno 32 -minMaf 0.05 -nInd $N_IND
+#ANGSD
+#remember 'space' before \ 
+/usr/bin/angsd -P 4 -b bam.filelist -ref Mg_Ref.fa -out ALL.qc -rf Mg_regions.txt \
+	-uniqueOnly 1 -remove_bads 1 -only_proper_pairs 1 -trim 0 -C 50 -baq 1 \
+	-minMapQ 20 -minQ 0 \
+	-doQsDist 1 -doDepth 1 -doCounts 1 -maxDepth 1000 
+	
+Rscript ../../../Thesis/Packages/ngsTools/Scripts/plotQC.R ALL.qc
+#info file will give percentiles
+
+						#?
+-minInd 7 -minMap 20 -minQ 0 -setMinDepth -setMaxDepth \
+-doGeno 32 -doPost 1 -doMaf 1 -minMaf 0.14 \
+-doMajorMinor 1 -GL 1
+
+
+/usr/bin/angsd -P 4 -b bam.filelist -ref Mg_Ref.fa -out Turkey_prcssd -rf Mg_regions.txt \
+	-uniqueOnly 1 -remove_bads 1 -only_proper_pairs 1 -trim 0 -C 50 -baq 1 \
+	-minMapQ 20 -minQ 20 -minInd 7 -setMinDepth 10 -setMaxDepth 400 -doCounts 1 \
+	-GL 1 -doMajorMinor 1 -doMaf 1 -skipTriallelic 1 \
+	-minMaf 0.14 \
+	-doGeno 32 -doPost 1 &> /dev/null
+
 
 #Get pos.txt and $NS
 zcat Turkey.mafs.gz | cut -f 1,2 | tail -n +2 > Turkey_pos.txt

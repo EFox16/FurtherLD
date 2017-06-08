@@ -17,6 +17,9 @@ from lmfit import minimize, Minimizer, Parameters, Parameter, report_fit, fit_re
 import csv
 import rpy2.robjects as robjects
 import subprocess
+import random
+import linecache
+
 
 ########################################################################
 # TAGS FOR OPTIONS                                                     #
@@ -33,8 +36,10 @@ Required_Arguments.add_argument("--data_type", type=str, choices=['r2Pear','D',
 					'DPrime','r2GLS'],
 					help="Choose which measure to plot: r2Pear, D, DPrime, or r2GLS",
 					default="stdout", required="True")
+parser.add_argument("--rnd_sample", type=float,
+					help="Use a fraction (greater than 0, less than 1) of the data to run the fitting analysis")
 parser.add_argument("--plot", 
-					help="create a graph of each input file with the fit 	curve overlaid", action="store_true")
+					help="create a graph of each input file with the fit curve overlaid", action="store_true")
 args = parser.parse_args()
 
 # Print help if no arguments specified and quit run
@@ -45,10 +50,21 @@ if len(sys.argv) == 1:
 # Give some output to describe options used
 print "\nData type chosen: {}".format(args.data_type)
 print "Path to {} to be analysed: {}".format(args.input_type, args.input_name)
-
-
+ 
+if args.rnd_sample:
+	#Will exit the script if a number greater than 1 or less than 0 is used
+	if 0 >= args.rnd_sample:
+		parser.print_help()
+		sys.exit(1)
+	elif args.rnd_sample >= 1:
+		parser.print_help()
+		sys.exit(1)
+	#Print a line describing the specified down-sampling
+	elif 0 < args.rnd_sample < 1:
+		print "Randomly subsample down to: {} * Total File Size".format(args.rnd_sample)
+	
 ########################################################################
-# LOAD DATA                                                            #
+# FUNCTIONS                                                            #
 ########################################################################
 def Make_FileList(input_name):
 	"""Takes the input and puts all the files to be analysed into a list"""
@@ -56,11 +72,44 @@ def Make_FileList(input_name):
 		FileList=[]
 		FileList.append(input_name)
 	if args.input_type == 'FOLDER':
-		FileList = glob.glob('%s*' % input_name)
+		FileList = glob.glob('%s/*' % input_name)
 	return FileList
-		
+
+def Make_Sampled_FileList(input_name):
+	"""Makes a new file list of the randomly sub-sampled files"""
+	if args.input_type == 'FILE':
+		FileList=[]
+		SampledFileName, SampledExten = os.path.splitext(input_name)
+		SampledName = '%s_smpld%s' % (SampledFileName,SampledExten)
+		FileList.append(SampledName)
+	if args.input_type == 'FOLDER':
+		FileList = glob.glob('%s/*_smpld*' % args.input_name)
+	return FileList
+
+def random_sample(input_name):
+	"""Randomly subset a file to the specified proportional size"""
+	#Count number of lines in original file
+	with open(input_name) as f:
+		old_size = len(f.readlines())
+	#Determine number of lines for new file
+	new_size=int(round(sum(1 for row in open(input_name))* args.rnd_sample))
+	#Create name for sub-sampled file
+	SampledFileName, SampledExten = os.path.splitext(input_name)
+	SampledName = '%s_smpld%s' % (SampledFileName,SampledExten)
+	#Randomly select the desired number of lines and print to new file
+	with open(SampledName,"wb") as sink:
+		for i in random.sample(range(0, old_size), new_size):
+			sink.write(linecache.getline(input_name, i))
+	linecache.clearcache()
+
 def Load_File(file_list_pos):
 	"""Loads a single file and defines the x and y axis for the graph"""
+	#Check size of input file
+	file_info=os.stat(file_list_pos)
+	if file_info.st_size >= 250000000:
+		print "\n***WARNING: FILE SIZE EXCEEDS 250 MB***" 
+		print "CONSIDER USING --rnd_sample TO SPEED UP PROCESSING"
+	
 	#Opens the binned ld file
 	ldFile = open(file_list_pos)
 	#Loads the distance between the pairs as well as the different linkage statistics into numpy nd arrays
@@ -95,9 +144,9 @@ def EXP(paramsEXP, x, data):
 	model = init * np.exp(lam * x)
 	return model - data
 
-#Import list of files to work on
-FileList=Make_FileList(args.input_name)
-
+########################################################################
+# LOAD DATA AND FIT                                                    #
+########################################################################
 #Create name for result file
 if args.input_type == 'FILE':
 	FileName, Exten = os.path.splitext(os.path.basename(args.input_name))
@@ -105,7 +154,15 @@ if args.input_type == 'FILE':
 if args.input_type == 'FOLDER':
 	FolderName = os.path.basename(os.path.normpath(args.input_name)) 
 	ResultName = '%s_%s.FitParams.csv' % (FolderName, args.data_type)
-	
+
+#Import list of files to work on
+FileList=Make_FileList(args.input_name)
+#If --rnd_sampled used, create new files and make list
+if args.rnd_sample:
+	for i in range(0,len(FileList)):
+		random_sample(FileList[i])
+	FileList=Make_Sampled_FileList(args.input_name)
+
 with open(ResultName, 'wb') as csvfile:
 	ResultFile = csv.writer(csvfile, delimiter=',', quotechar='|')
 	#Puts headings on the csv file
@@ -153,4 +210,4 @@ if args.plot:
 	
 	#HOW SHOULD I REFER TO THE PLOTTING SCRIPT? (will be in the same folder as the Fit_Exp.py script but not necessarily in the folder the script is being run) 
 	print "\nBeginning plotting in R\n"
-	subprocess.call(["Rscript", Rrun] + args)
+	subprocess.call(["Rscript", Rrun] + args)	
