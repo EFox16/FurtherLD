@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript
 
-#FileName: Calculating_ComparisonStatistics.R
+#FileName: Plot_CompStats.R
 #Author: "Emma Fox (e.fox16@imperial.ac.uk)"
 #Combines all data into a data frame of shared points. 
 #Calculates a root mean square and and standard deviation comparison for each SNP pair
