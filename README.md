@@ -1,4 +1,5 @@
 Repository for further LD explorations
+(mac is now connected) 
 
 CODE
 
