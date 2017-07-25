@@ -24,18 +24,23 @@ N_SITES=10000000
 ERR_RATE=0.01
 
 N_IND=$((N_SAM / 2))
-MINMAF=$(echo "scale=3; 2/$N_SAM" | bc)
+#MINMAF=$(echo "scale=3; 2/$N_SAM" | bc)
 
 if [ $PBS_ARRAY_INDEX = 1 ]; then
 READ_NUM=50
+FILTER_COND="-minMaf 0.02"
 elif [ $PBS_ARRAY_INDEX = 2 ]; then
 READ_NUM=20
+FILTER_COND="-minMaf 0.02"
 elif [ $PBS_ARRAY_INDEX = 3 ]; then
 READ_NUM=10
+FILTER_COND="-minMaf 0.02"
 elif [ $PBS_ARRAY_INDEX = 4 ]; then
 READ_NUM=5
+FILTER_COND="-minMaf 0.02"
 elif [ $PBS_ARRAY_INDEX = 5 ]; then
 READ_NUM=2
+FILTER_COND="-SNP_pval 0.0001"
 fi
 
 $MS $N_SAM $N_REPS -t $THETA -r $RHO $N_SITES > ${SET_NAME}.txt
@@ -46,7 +51,7 @@ $TOGLF -in ${SET_NAME}.txt -out ${SET_NAME}_reads${READ_NUM} -regLen $N_SITES -s
 echo "msToGLF RUN COMPLETE"
 date
 
-$ANGSD -glf ${SET_NAME}_reads${READ_NUM}.glf.gz -fai $WORK/Constant/reference.fa.fai -nInd $N_IND -doMajorMinor 1 -doPost 1 -doMaf 1 -doGeno 32 -out ${SET_NAME}_reads${READ_NUM} -isSim 1 -minMaf $MINMAF
+$ANGSD -glf ${SET_NAME}_reads${READ_NUM}.glf.gz -fai $WORK/Constant/reference.fa.fai -nInd $N_IND -doMajorMinor 1 -doPost 1 -doMaf 1 -doGeno 32 -out ${SET_NAME}_reads${READ_NUM} -isSim 1 $FILTER_COND
 echo "ANGSD RUN COMPLETE"
 date
 
