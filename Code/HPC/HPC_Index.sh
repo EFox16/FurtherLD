@@ -28,7 +28,7 @@ DIFF_LEN=$((LEN1-LEN2))
 echo "Number of rows removed:" $DIFF_LEN
 echo "New length:" $LEN2
 
-awk '(NR>0) && ($7 != "NA")' FullIndex.$PBS_ARRAY_INDEX.0B > FullIndex.$PBS_ARRAY_INDEX.0
+awk '(NR>0) && ($7 != "NaN")' FullIndex.$PBS_ARRAY_INDEX.0B > FullIndex.$PBS_ARRAY_INDEX.0
 LEN2B=`cat FullIndex.$PBS_ARRAY_INDEX.0 | wc -l`
 DIFF_LENB=$((LEN2-LEN2B))
 echo "Number of rows removed:" $DIFF_LENB

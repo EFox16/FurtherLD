@@ -8,8 +8,8 @@ module load anaconda
 echo "SCRIPT BEGAN RUNNING AT..."
 date
 
-python $WORK/Fit_Exp.py --input_type FILE --input_name $WORK/Turkey.ld --data_type r2Pear
+python $WORK/Fit_Exp.py --input_type FILE --input_name $WORK/Turkey/Turkey.ld --data_type r2Pear
 
-mv Turkey*.csv $WORK
+mv Turkey*.csv $WORK/Turkey
 
 echo "SCRIPT RUN TO COMPLETION"
