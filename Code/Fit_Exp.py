@@ -69,20 +69,33 @@ for i in FileList:
 ########################################################################
 
 def random_sample(input_name):
-	"""Randomly subset a file to the specified proportional size"""
-	#Count number of lines in original file
-	with open(input_name) as f:
-		old_size = len(f.readlines())
-	#Determine number of lines for new file
-	new_size=int(round(sum(1 for row in open(input_name))* args.rnd_sample))
-	#Create name for sub-sampled file
-	SampledFileName, SampledExten = os.path.splitext(input_name)
-	SampledName = '%s_smpld%s' % (SampledFileName,SampledExten)
-	#Randomly select the desired number of lines and print to new file
-	with open(SampledName,"wb") as sink:
-		for i in random.sample(range(0, old_size), new_size):
-			sink.write(linecache.getline(input_name, i))
-	linecache.clearcache()
+        """Randomly subset a file to the specified proportional size"""
+        #Count number of lines in original file
+        SampledName = Make_Sampled_FileName(input_name)
+        sink = open(SampledName, "w")
+        f = open(input_name)
+        for line in f:
+            if np.random.random(1) < args.rnd_sample:
+                sink.write(line)
+        f.close()
+        sink.close()
+
+
+#~ def random_sample(input_name):
+	#~ """Randomly subset a file to the specified proportional size"""
+	#~ #Count number of lines in original file
+	#~ with open(input_name) as f:
+		#~ old_size = len(f.readlines())
+	#~ #Determine number of lines for new file
+	#~ new_size=int(round(sum(1 for row in open(input_name))* args.rnd_sample))
+	#~ #Create name for sub-sampled file
+	#~ SampledFileName, SampledExten = os.path.splitext(input_name)
+	#~ SampledName = '%s_smpld%s' % (SampledFileName,SampledExten)
+	#~ #Randomly select the desired number of lines and print to new file
+	#~ with open(SampledName,"wb") as sink:
+		#~ for i in random.sample(range(0, old_size), new_size):
+			#~ sink.write(linecache.getline(input_name, i))
+	#~ linecache.clearcache()
 
 def Make_Sampled_FileName(input_name):
 	"""Makes a new file list of the randomly sub-sampled files"""

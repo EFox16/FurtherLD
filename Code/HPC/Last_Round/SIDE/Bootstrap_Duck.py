@@ -26,14 +26,14 @@ input_file=sys.argv[1]
 output_file=sys.argv[2]
 
 start_pos=0
-end_pos=1731841
+end_pos=1472465
 group_pos_list=[]
 #Create list of the positions in each of the 100 blocks 
 for i in range(0,100):
 	new_pos_list=list(range(start_pos,end_pos))
 	group_pos_list.append(new_pos_list)
-	start_pos=start_pos+1731841
-	end_pos=end_pos+1731841
+	start_pos=start_pos+1472465
+	end_pos=end_pos+1472465
 
 #Select 100 blocks randomly with replacement
 #And write those rows to a new file

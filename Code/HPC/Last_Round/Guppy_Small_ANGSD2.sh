@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l walltime=36:30:00
+#PBS -l walltime=20:30:00
 #PBS -lselect=1:ncpus=1:mem=240gb 
 
 module load intel-suite
@@ -56,32 +56,41 @@ MINMAF=$(echo "scale=3; 1/(2*$N_IND)" | bc)
 echo "SCRIPT BEGAN RUNNING AT..."
 date
 
-#~ $HOME/Packages/angsd/angsd -b $POP_BAMLIST -ref $REF -out $WORK/Guppy/${POP_NAME} \
+#~ $HOME/Packages/angsd/angsd -b $POP_BAMLIST -ref $REF -out $WORK/Guppy/${POP_NAME}_smll \
 	#~ -uniqueOnly 1 -remove_bads 1 -only_proper_pairs 1 -trim 0 -C 50 -baq 1 \
 	#~ -minMapQ 20 -minQ 20 -minInd 3 -setMinDepth 0 -setMaxDepth $MAX_DEPTH -doCounts 1 \
 	#~ -GL 1 -doMajorMinor 1 -doMaf 1 -skipTriallelic 1 \
-	#~ -SNP_pval 0.0001 \
+	#~ -SNP_pval 0.00001 \
 	#~ -doGeno 32 -doPost 1 
 
 
 #~ #Get pos.txt and $NS
-#~ zcat $WORK/Guppy/${POP_NAME}.mafs.gz | cut -f 1,2 | tail -n +2 > $WORK/Guppy/${POP_NAME}_pos.txt
-#~ NS=`cat $WORK/Guppy/${POP_NAME}_pos.txt | wc -l`
+#~ zcat $WORK/Guppy/${POP_NAME}_smll.mafs.gz | cut -f 1,2 | tail -n +2 > $WORK/Guppy/${POP_NAME}_smll_pos.txt
+NS=`cat $WORK/Guppy/${POP_NAME}_smll_pos.txt | wc -l`
 
 #Unzip geno file and run ngsLD
 echo "ngsLD BEGAN RUNNING AT"
 date
-gunzip -f $WORK/Guppy/${POP_NAME}.geno.gz
-$HOME/Packages/ngsLD/ngsLD --geno $WORK/Guppy/${POP_NAME}.geno --out ${POP_NAME}.ld --pos $WORK/Guppy/${POP_NAME}_pos.txt --n_ind $N_IND --n_sites $NS --verbose 1 --probs --max_kb_dist 1000 --min_maf $MINMAF --rnd_sample 0.1
+gunzip -f $WORK/Guppy/${POP_NAME}_smll.geno.gz
+$HOME/Packages/ngsLD/ngsLD --geno $WORK/Guppy/${POP_NAME}_smll.geno --out ${POP_NAME}_smll.ld --pos $WORK/Guppy/${POP_NAME}_smll_pos.txt --n_ind $N_IND --n_sites $NS --verbose 1 --probs --max_kb_dist 1000 --min_maf $MINMAF --rnd_sample 0.01
 
+
+echo "Removing NaN"
+LEN1=`cat ${POP_NAME}_smll.ld | wc -l`
+echo "Original Length:" $LEN1
+awk '(NR>0) && $7==($7+0)' ${POP_NAME}_smll.ld > ${POP_NAME}_smll_fltrd.ld 
+LEN2B=`cat ${POP_NAME}_smll_fltrd.ld | wc -l`
+DIFF_LENB=$((LEN1-LEN2B))
+echo "Number of rows removed:" $DIFF_LENB
+echo "New length:" $LEN2B
 
 echo "Fit_Exp BEGAN RUNNING AT"
 date
-FILENAME=${POP_NAME}.ld
-echo $FILENAME > InList_${POP_NAME}
-python $WORK/Fit_Exp.py --input_list InList_${POP_NAME}  --data_type r2Pear --output_prefix ${POP_NAME}
+FILENAME=${POP_NAME}_smll_fltrd.ld
+echo $FILENAME > InList_${POP_NAME}_smll
+python $WORK/Fit_Exp.py --input_list InList_${POP_NAME}_smll  --data_type r2GLS --output_prefix ${POP_NAME}_1000
 
-mv ${POP_NAME}.csv $WORK/Guppy/
+mv ${POP_NAME}_1000.csv $WORK/Guppy/
 echo "SCRIPT RUN TO COMPLETION"
 
 

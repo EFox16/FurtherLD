@@ -109,7 +109,7 @@ if (opt$plot_type=="Indiv_noData"){
     cat(paste("\n","Printing graph to ",PlotName,"\n",sep = ""))
     #Combine the base plot, fit curve, and title to get the final graph
     FitPlot<-FitPlot + ExpCurve + ggtitle(PlotTitle) + theme(plot.title = element_text(hjust = 0.5), legend.position="none")
-    #save the graph as a jpeg
+    #save the graph as a pdf
     pdf(PlotName)
     print(FitPlot)
     dev.off()
